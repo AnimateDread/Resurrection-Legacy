@@ -1,0 +1,95 @@
+#!/bin/bash
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+#cloud restore
+
+#needed variables to save bloody code
+sbalert -t "Running" -m "Restoring backup..." -d "" &
+alert_id="$!"
+base="/var/mobile/Library/resurrection/cloud/restore"
+base2="/var/mobile/Library/resurrection/cloud"
+vm="/var/mobile"
+vml="$vm/Library"
+vmlp="$vml/Preferences"
+
+if [[ ! -f $base2/restore/backup.tar.gz ]];
+then
+sbalert -t "Failed" -m "You haven't placed the backup.tar.gz into $base2/restore"
+exit 0
+fi
+
+#setting the key in order to select what to backup
+
+Contacts=$(plutil -key Contacts $vmlp/com.resurrection.cloud.plist)
+
+SMS=$(plutil -key SMS $vmlp/com.resurrection.cloud.plist)
+
+Calendar=$(plutil -key Calendar $vmlp/com.resurrection.cloud.plist)
+
+Notes=$(plutil -key Notes $vmlp/com.resurrection.cloud.plist)
+
+Camera=$(plutil -key Camera $vmlp/com.resurrection.cloud.plist)
+
+Mail=$(plutil -key Mail $vmlp/com.resurrection.cloud.plist)
+
+Call=$(plutil -key Call $vmlp/com.resurrection.cloud.plist)
+
+Safari=$(plutil -key Safari $vmlp/com.resurrection.cloud.plist)
+
+cd $base2/restore
+
+gunzip $base2/restore/backup.tar.gz
+
+tar -xvf $base2/restore/backup.tar
+
+rm $base2/restore/backup.tar
+
+mv "$base2/restore/backup/*" "$base/"
+
+#contacts
+
+if [[ "$Contacts" == "1" ]]; then
+cp -r $base/contacts/* $vml/AddressBook/
+fi
+
+#sms
+if [[ "$SMS" == "1" ]]; then
+cp -r $base/sms/* $vml/SMS/
+fi
+
+#calendar
+if [[ "$Calendar" == "1" ]]; then
+cp -r $base/calendar/* $vml/Calendar/
+fi
+
+#notes
+
+if [[ "$Notes" == "1" ]]; then
+cp -r $base/notes/* $vml/Notes/ 
+fi
+
+#camera roll
+
+if [[ "$Camera" == "1" ]]; then
+cp -r $base/camera/* $vm/Media/DCIM/ 
+fi
+
+#mail
+
+if [[ "$Mail" == "1" ]]; then
+cp -r $base/mail/* $vml/Mail/
+fi
+
+#bookmarks
+
+if [[ "$Safari" == "1" ]]; then
+cp -r $base/safari/* $vml/Safari/ 
+fi
+
+kill $alert_id
+
+sbalert -t "Success" -m "Your backup was sucessfuly restored"
+
+exit 0

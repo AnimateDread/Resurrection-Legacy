@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#This is incomplete
+
+sbalert -t "Resurrection" -m "Please wait while I find/fix any problems..." -d "" &
+alert_id="$!"
+
+logfile="/var/mobile/Library/resurrection/logs/install.log"
+
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "License is missing, attempting to add it" 2>> $log;
+touch "/var/mobile/Library/resurrection/$crypt";
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "could not add license" 2>> $log;
+fi
+
+if [[ ! -f /var/mobile/Library/backup ]]; then echo "backup was not made, uh oh" 2>> $log;
+fi
+
+
+
+
+
+kill $alert_id

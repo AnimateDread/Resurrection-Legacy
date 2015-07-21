@@ -1,0 +1,94 @@
+#!/bin/bash
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+#cloud backup
+
+#needed variables to save bloody code
+sbalert -t "Running" -m "Creating backup..." -d "" &
+alert_id="$!"
+base="/var/mobile/Library/resurrection/cloud/backup"
+base2="/var/mobile/Library/resurrection/cloud"
+vm="/var/mobile"
+vml="$vm/Library"
+vmlp="$vml/Preferences"
+
+#setting the key in order to select what to backup
+
+Contacts=$(plutil -key Contacts $vmlp/com.resurrection.cloud.plist)
+
+SMS=$(plutil -key SMS $vmlp/com.resurrection.cloud.plist)
+
+Calendar=$(plutil -key Calendar $vmlp/com.resurrection.cloud.plist)
+
+Notes=$(plutil -key Notes $vmlp/com.resurrection.cloud.plist)
+
+Camera=$(plutil -key Camera $vmlp/com.resurrection.cloud.plist)
+
+Mail=$(plutil -key Mail $vmlp/com.resurrection.cloud.plist)
+
+Call=$(plutil -key Call $vmlp/com.resurrection.cloud.plist)
+
+Safari=$(plutil -key Safari $vmlp/com.resurrection.cloud.plist)
+
+#contacts
+
+if [[ "$Contacts" == "1" ]]; then
+cp -r $vml/AddressBook/*.db $base/contacts/
+fi
+
+#sms
+if [[ "$SMS" == "1" ]]; then
+cp -r $vml/SMS/*.db $base/sms/
+fi
+
+#calendar
+if [[ "$Calendar" == "1" ]]; then
+cp -r $vml/Calendar/*.db $base/calendar/
+fi
+
+#notes
+
+if [[ "$Notes" == "1" ]]; then
+cp -r $vml/Notes/*.db $base/notes/
+fi
+
+#camera roll
+
+if [[ "$Camera" == "1" ]]; then
+cp -r $vm/Media/DCIM/*.db $base/camera/
+fi
+
+#mail
+
+if [[ "$Mail" == "1" ]]; then
+cp -r $vml/Mail/*.db $base/mail/
+fi
+
+#bookmarks
+
+if [[ "$Safari" == "1" ]]; then
+cp -r $vml/Safari/*.db $base/safari/
+fi
+
+chmod +x -R $base
+
+cp -r $base /
+
+cd /
+
+tar -pcvzf backup.tar.gz /backup
+
+rm -rf /backup
+
+mv "/backup.tar.gz" "$base2/backup.tar.gz"
+
+cp $base2/backup.tar.gz $base2/restore/backup.tar.gz
+kill $alert_id
+
+sbalert -t "Success" -m "Your backup was sucessfuly created in /var/mobile/Library/resurrection/cloud, access this directory via SSH and save the gz archive to your pc"
+
+sbalert -m "In order to restore this backup later, you must put it in /var/mobile/Library/resurrection/cloud/restore"
+
+exit 0

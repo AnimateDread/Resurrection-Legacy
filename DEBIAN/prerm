@@ -1,0 +1,292 @@
+#!/bin/bash
+
+if [[ -f "/var/mobile/lock" ]]; then 
+exit 0;
+fi
+
+echo "prerm script"
+
+base="/var/mobile/Library/backup"
+app="/Applications"
+version=$(plutil -key ProductVersion /System/Library/CoreServices/SystemVersion.plist)
+device=$(sysctl hw.machine)
+property=$(uname -i)
+
+echo "starting desinstallation for $device on iOS $version..."
+
+#applying stock theme
+/var/mobile/Library/resurrection/bin/theme uninstall
+
+if [ "$version" = "3.1.3" ]; then
+cp $base/SBDockBG.png /System/Library/CoreServices/SpringBoard.app/SBDockBG.png 
+cp -r $base/Preferences/* $app/Preferences.app/
+fi
+
+echo "done"
+
+if [ "$version" = "3.1.3" ]; then
+crypt=$(echo "`sbdevice -u`-EpicTechnology" | openssl dgst -sha1 -hmac "AppleJuice")
+if [[ -f /var/mobile/$crypt ]]; then
+sl="/System/Library"
+cp $base/com.apple.* $sl/SystemConfiguration/PowerManagement.bundle/  
+mv "$base/Configuration.plist" "$sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist" 
+cp -r $base/Preferences/* $app/Preferences.app/
+else
+sl="/System/Library"
+cp $base/com.apple.* $sl/SystemConfiguration/PowerManagement.bundle/  
+mv "$base/Configuration.plist" "$sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist" 
+cp -r $base/Preferences/* $app/Preferences.app/
+rm -rf /Library/MobileSubstrate/iOS3Wallpaper
+rm /Library/MobileSubstrate/DynamicLibraries/Multitasking.dylib
+rm /Library/MobileSubstrate/DynamicLibraries/Multitasking.disabled
+rm /Library/MobileSubstrate/DynamicLibraries/Wallpaper.dylib
+rm /Library/MobileSubstrate/DynamicLibraries/Wallpaper.disabled
+rm /Library/MobileSubstrate/DynamicLibraries/Folders.dylib
+rm /Library/MobileSubstrate/DynamicLibraries/Folders.disabled
+rm /Library/MobileSubstrate/DynamicLibraries/videoswitch.plist
+rm /Library/MobileSubstrate/DynamicLibraries/videoswitch.dylib
+rm -rf /var/mobile/Library/Preferences/com.darlo*
+rm -f -r "/private/var/mobile/Library/Preferences/springboardFolderStash"
+rm -r -f /Applications/com.springboard.folder*
+rm -rf $sl/CoreServices/SpringBoard.app/AppSwitcher
+rm -rf $sl/CoreServices/SpringBoard.app/Folders
+rm -rf /var/mobile/Library/resurrection
+fi
+fi
+
+
+ios4()
+{
+sl="/System/Library"
+cp $base/com.apple.* $sl/SystemConfiguration/PowerManagement.bundle/
+mv "$base/Configuration.plist" "$sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist"
+cp -r $base/Preferences/* $app/Preferences.app/
+rm /Library/MobileSubstrate/DynamicLibraries/AppSync.dylib
+rm /Library/MobileSubstrate/DynamicLibraries/AppSync.plist
+rm /Library/MobileSubstrate/DynamicLibraries/NoGhostlyIcons.dylib
+rm /Library/MobileSubstrate/DynamicLibraries/noGhostlyIcons.plist
+rm /Library/MobileSubstrate/DynamicLibraries/videoswitch.plist
+rm /Library/MobileSubstrate/DynamicLibraries/videoswitch.dylib
+rm -rf /var/mobile/Library/resurrection
+}
+
+ios5()
+{
+sl="/System/Library"
+cp $base/com.apple.* $sl/CoreServices/powerd.bundle/
+mv "$base/Configuration.plist" "$sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist"
+cp -r $base/Preferences/* $app/Preferences.app/
+rm /Library/MobileSubstrate/DynamicLibraries/AppSync.dylib
+rm /Library/MobileSubstrate/DynamicLibraries/AppSync.plist
+rm /Library/MobileSubstrate/DynamicLibraries/NoGhostlyIcons.dylib
+rm /Library/MobileSubstrate/DynamicLibraries/noGhostlyIcons.plist
+rm -rf /var/mobile/Library/resurrection
+}
+
+ios6()
+{
+sl="/System/Library"
+cp $base/com.apple.* $sl/CoreServices/powerd.bundle/
+mv "$base/Configuration.plist" "$sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist"
+cp -r $base/Preferences/* $app/Preferences.app/
+rm /Library/MobileSubstrate/DynamicLibraries/AppSync.dylib
+rm /Library/MobileSubstrate/DynamicLibraries/AppSync.plist
+rm /Library/MobileSubstrate/DynamicLibraries/NoGhostlyIcons.dylib
+rm /Library/MobileSubstrate/DynamicLibraries/noGhostlyIcons.plist
+rm -rf /var/mobile/Library/resurrection
+}
+
+d="/System/Library/LaunchDaemons"
+mv "$d/com.apple.appsupport.cplogd.bak" "$d/com.apple.appsupport.cplogd.plist"
+
+mv "$d/com.apple.apsd.tcpdump.en0.bak" "$d/com.apple.apsd.tcpdump.en0.bak"
+
+mv "$d/com.apple.tcpdump.pdp_ip0.bak" "$d/com.apple.tcpdump.pdp_ip0.plist"
+
+mv "$d/com.apple.aslmanager.bak" "$d/com.apple.aslmanager.plist"
+
+mv "$d/com.apple.certui.relay.bak" "$d/com.apple.certui.relay.plist"
+
+mv "$d/com.apple.coresymbolicationd.bak" "$d/com.apple.coresymbolicationd.plist"
+
+mv "$d/com.apple.crash_mover.bak" "$d/com.apple.crash_mover.plist"
+
+mv "$d/com.apple.DumpPanic.bak" "$d/com.apple.DumpPanic.plist"
+
+mv "$d/com.apple.fsvented.bak" "$d/com.apple.fsvented.plist"
+
+mv "$d/com.apple.marcoagent.bak" "$d/com.apple.marcoagent.plist"
+
+mv "$d/com.apple.mobile.softwareupdated.bak" "$d/com.apple.mobile.softwareupdated.plist"
+
+mv "$d/com.apple.OTACrashCopier.bak" "$d/com.apple.OTACrashCopier.plist"
+
+mv "$d/com.apple.OTATaskingAgent.bak" "$d/com.apple.OTATaskingAgent.plist"
+
+mv "$d/com.apple.powerlog.bak" "$d/com.apple.powerlog.plist"
+
+mv "$d/com.apple.sharktrace.bak" "$d/com.apple.sharktrace.plist"
+
+mv "$d/com.apple.softwareupdateservicesd.bak" "$d/com.apple.softwareupdateservicesd.plist"
+
+mv "$d/com.apple.syslog.bak" "$d/com.apple.syslog.plist"
+
+mv "$d/com.apple.AdminLite.bak" "$d/com.apple.AdminLite.plist"
+
+mv "$d/com.apple.awdd.bak" "$d/com.apple.awdd.plist"
+
+mv "$d/com.apple.mobile.profile_janitor.bak" "$d/com.apple.mobile.profile_janitor.plist"
+
+mv "$d/com.apple.mobile.obliteration.bak" "$d/com.apple.mobile.obliteration.plist"
+
+
+if [ "$version" = "4.0" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.0.1" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.0.2" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.1" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.2.1" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.3" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.3.1" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.3.2" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.3.3" ]; then
+ios4;
+fi
+
+if [ "$version" = "5.0" ]; then
+ios5;
+fi
+
+if [ "$version" = "5.0.1" ]; then
+ios5;
+fi
+
+if [ "$version" = "5.1" ]; then
+ios5;
+fi
+
+if [ "$version" = "5.1.1" ]; then
+ios5;
+fi
+
+if [ "$version" = "6.0" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.0.1" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1.1" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1.2" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1.3" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1.5" ]; then
+ios6;
+fi
+
+echo "enabling every iOS features"
+
+property=$(uname -i)
+
+launchctl load -w /System/Library/LaunchDaemons/com.apple.scrod.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.voiced.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.VoiceOverTouch.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.vsassetd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.gamed.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.twitterd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.printd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.assitivetouchd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.AOSNotification.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.itunescloudd.plist
+mv "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow~iphone.disabled" "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow~iphone.png"
+mv "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow@2x~iphone.disabled" "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow@2x~iphone.png"
+mv "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow.disabled" "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow.png"
+launchctl load -w /System/Library/LaunchDaemons/com.apple.searchd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.search.appindexer.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.apsd.plist
+mv "/System/Library/LaunchDaemons/com.apple.dynamic_pager.plist" "/var/mobile/Library/resurrection/daemons/com.apple.dynamic_pager.disabled"
+rm /var/vm/swapfile0
+launchctl load -w /System/Library/LaunchDaemons/com.apple.racoon.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.MobileInternetSharing.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.dataaccess.dataaccessd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.UIKit.pasteboardd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.accessoryd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.iapd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.mobile.accessory_device_arbitrator.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.iap2d.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.iapauthd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.iaptransportd.plist
+plutil -key capabilities -key homescreen-wallpaper -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+mv "/Library/MobileSubstrate/DynamicLibraries/Wallpaper.disabled" "/Library/MobileSubstrate/DynamicLibraries/Wallpaper.dylib"
+plutil -key capabilities -key multitasking -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+mv "/Library/MobileSubstrate/DynamicLibraries/Multitasking.disabled" "/Library/MobileSubstrate/DynamicLibraries/Multitasking.dylib";
+mv "/Library/MobileSubstrate/DynamicLibraries/Backgrounder.disabled" "/Library/MobileSubstrate/DynamicLibraries/Backgrounder.dylib";
+mv "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.dylib" "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.disabled";
+plutil -key capabilities -key nike-ipod -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key voice-control -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.voiced.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.VoiceOverTouch.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.vsassetd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.scrod.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.passd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.powerd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.vibrationmanagerd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.mediastream.mstreamd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.midiserver-ios.plist
+launchctl load -w /System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist
+plutil -key capabilities -key wifi -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key microphone -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key gas-gauge-battery -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key photo-stream -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key 720p -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key bluetooth -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key Disabled -0 /System/Library/LaunchDaemons/com.apple.BTServer.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.BTServer.plist
+plutil -key capabilities -key location-services -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.locationd.plist
+mv "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.disabled" "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.dylib"
+mv "/Library/MobileSubstrate/DynamicLibraries/Multitasking.dylib" "/Library/MobileSubstrate/DynamicLibraries/Multitasking.disabled"
+mv "/Library/MobileSubstrate/DynamicLibraries/WDSara.disabled" "/Library/MobileSubstrate/DynamicLibraries/WDSara.dylib"
+mv "/Library/MobileSubstrate/DynamicLibraries/WDiOS6Menu.disabled" "/Library/MobileSubstrate/DynamicLibraries/WDiOS6Menu.dylib"
+
+rm /var/mobile/Library/systemissafe
+
+rm /var/mobile/Library/folderset
+
+exit 0

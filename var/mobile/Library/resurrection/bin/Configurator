@@ -1,0 +1,452 @@
+#!/bin/bash
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+#needed variable
+
+property=$(uname -i)
+
+Shadows=$(plutil -key Shadows /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Spotlight=$(plutil -key Spotlight /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Notifications=$(plutil -key Notifications /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+AutoCleaner=$(plutil -key AutoCleaner /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+AutoOTA=$(plutil -key AutoOTA /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+VM=$(plutil -key VM /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+VPN=$(plutil -key VPN /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Tethering=$(plutil -key Tethering /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Exchange=$(plutil -key Exchange /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Airplay=$(plutil -key Airplay /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Copy=$(plutil -key Copy /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Accessory=$(plutil -key Accessory /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+iCloud=$(plutil -key iCloud /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Touch=$(plutil -key Touch /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Print=$(plutil -key Print /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Twitter=$(plutil -key Twitter /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Game=$(plutil -key Game /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Voice=$(plutil -key Voice /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Multitasking=$(plutil -key Multitasking /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Wallpaper=$(plutil -key Wallpaper /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Nike=$(plutil -key Nike /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Voice=$(plutil -key Voice /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Passbook=$(plutil -key Passbook /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Overclock=$(plutil -key Overclock /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Vibration=$(plutil -key Vibration /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Stream=$(plutil -key Stream /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Midi=$(plutil -key Midi /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+AutoInstall=$(plutil -key AutoInstall /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Wifi=$(plutil -key Wifi /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Micro=$(plutil -key Micro /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Battery=$(plutil -key Battery /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Stream=$(plutil -key Stream /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Fix=$(plutil -key Fix /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Animations=$(plutil -key Animations /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Bluetooth=$(plutil -key Bluetooth /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Location=$(plutil -key Location /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+SharingMenu=$(plutil -key SharingMenu /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+Sara=$(plutil -key Sara /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+fastAppSwitcher=$(plutil -key fastAppSwitcher /var/mobile/Library/Preferences/com.resurrection.configurator.plist)
+
+if [[ "$Voice" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.scrod.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.voiced.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.VoiceOverTouch.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.vsassetd.plist
+fi
+
+if [[ "$Voice" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.scrod.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.voiced.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.VoiceOverTouch.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.vsassetd.plist
+fi
+
+if [[ "$Game" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.gamed.plist
+fi
+
+if [[ "$Game" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.gamed.plist
+fi
+
+if [[ "$Twitter" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.twitterd.plist
+fi
+
+if [[ "$Twitter" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.twitterd.plist
+fi
+
+if [[ "$Print" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.printd.plist
+fi
+
+if [[ "$Print" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.printd.plist
+fi
+
+if [[ "$Touch" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.assitivetouchd.plist
+fi
+
+if [[ "$Touch" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.assitivetouchd.plist
+fi
+
+if [[ "$iCloud" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.AOSNotification.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.itunescloudd.plist
+fi
+
+if [[ "$iCloud" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.AOSNotification.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.itunescloudd.plist
+fi
+
+if [[ "$Shadows" == "1" ]]; then
+mv "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow~iphone.disabled" "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow~iphone.png"
+mv "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow@2x~iphone.disabled" "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow@2x~iphone.png"
+mv "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow.disabled" "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow.png"
+fi
+
+if [[ "$Shadows" == "0" ]]; then
+mv "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow~iphone.png" "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow~iphone.disabled"
+mv "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow@2x~iphone.png" "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow@2x~iphone.disabled"
+mv "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow.png" "/System/Library/CoreServices/SpringBoard.app/WallpaperIconShadow.disabled"
+fi
+
+if [[ "$Spotlight" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.searchd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.search.appindexer.plist
+fi
+
+if [[ "$Spotlight" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.searchd.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.search.appindexer.plist
+fi
+
+if [[ "$Notifications" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.apsd.plist
+fi
+
+if [[ "$Notifications" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.apsd.plist
+fi
+
+if [[ "$AutoCleaner" == "1" ]]; then
+mv "/var/mobile/Library/resurrection/daemons/com.resurrection.cleaner.disabled" "/System/Library/LaunchDaemons/com.resurrection.cleaner.plist"
+launchctl load -w /System/Library/LaunchDaemons/com.resurrection.cleaner.plist
+fi
+
+if [[ "$AutoCleaner" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.resurrection.cleaner.plist
+mv "/System/Library/LaunchDaemons/com.resurrection.cleaner.plist" "/var/mobile/Library/resurrection/daemons/com.resurrection.cleaner.disabled"
+fi
+
+if [[ "$AutoOTA" == "1" ]]; then
+mv "/var/mobile/Library/resurrection/daemons/com.resurrection.ota_checker.disabled" "/System/Library/LaunchDaemons/com.resurrection.ota_checker.plist"
+launchctl load -w /System/Library/LaunchDaemons/com.resurrection.ota_checker.plist
+fi
+
+if [[ "$AutoOTA" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.resurrection.ota_checker.plist
+mv "/System/Library/LaunchDaemons/com.resurrection.ota_checker.plist" "/var/mobile/Library/resurrection/daemons/com.resurrection.ota_checker.disabled"
+fi
+
+if [[ "$VM" == "1" ]]; then
+mv "/var/mobile/Library/resurrection/daemons/com.apple.dynamic_pager.disabled" "/System/Library/LaunchDaemons/com.apple.dynamic_pager.plist"
+launchctl load -w /System/Library/LaunchDaemons/com.apple.dynamic_pager.plist
+fi
+
+if [[ "$VM" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.dynamic_pager.plist
+mv "/System/Library/LaunchDaemons/com.apple.dynamic_pager.plist" "/var/mobile/Library/resurrection/daemons/com.apple.dynamic_pager.disabled"
+rm /var/vm/swapfile0
+fi
+
+if [[ "$VPN" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.racoon.plist
+fi
+
+if [[ "$VPN" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.racoon.plist
+fi
+
+if [[ "$Tethering" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.MobileInternetSharing.plist
+fi
+
+if [[ "$Tethering" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.MobileInternetSharing.plist
+fi
+
+if [[ "$Exchange" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.dataaccess.dataaccessd.plist
+fi
+
+if [[ "$Exchange" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.dataaccess.dataaccessd.plist
+fi
+
+if [[ "$Copy" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.UIKit.pasteboardd.plist
+fi
+
+if [[ "$Copy" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.UIKit.pasteboardd.plist
+fi
+
+if [[ "$Accessory" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.accessoryd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.iapd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.mobile.accessory_device_arbitrator.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.iap2d.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.iapauthd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.iaptransportd.plist
+fi
+
+if [[ "$Accessory" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.accessoryd.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.iapd.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.mobile.accessory_device_arbitrator.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.iap2d.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.iapauthd.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.iaptransportd.plist
+fi
+
+if [[ "$Wallpaper" == "0" ]]; then
+plutil -key capabilities -key homescreen-wallpaper -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+mv "/Library/MobileSubstrate/DynamicLibraries/Wallpaper.dylib" "/Library/MobileSubstrate/DynamicLibraries/Wallpaper.disabled"
+fi
+
+if [[ "$Wallpaper" == "1" ]]; then
+plutil -key capabilities -key homescreen-wallpaper -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+mv "/Library/MobileSubstrate/DynamicLibraries/Wallpaper.disabled" "/Library/MobileSubstrate/DynamicLibraries/Wallpaper.dylib"
+fi
+
+if [[ "$Multitasking" == "0" ]]; then
+plutil -key capabilities -key multitasking -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+mv "/Library/MobileSubstrate/DynamicLibraries/Multitasking.dylib" "/Library/MobileSubstrate/DynamicLibraries/Multitasking.disabled";
+mv "/Library/MobileSubstrate/DynamicLibraries/Backgrounder.dylib" "/Library/MobileSubstrate/DynamicLibraries/Backgrounder.disabled";
+fi
+
+if [[ "$Multitasking" == "1" ]]; then
+plutil -key capabilities -key multitasking -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+mv "/Library/MobileSubstrate/DynamicLibraries/Multitasking.disabled" "/Library/MobileSubstrate/DynamicLibraries/Multitasking.dylib";
+mv "/Library/MobileSubstrate/DynamicLibraries/Backgrounder.disabled" "/Library/MobileSubstrate/DynamicLibraries/Backgrounder.dylib";
+mv "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.dylib" "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.disabled";
+fi
+
+if [[ "$Nike" == "0" ]]; then
+plutil -key capabilities -key nike-ipod -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Nike" == "1" ]]; then
+plutil -key capabilities -key nike-ipod -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+
+fi
+
+if [[ "$Voice" == "0" ]]; then
+plutil -key capabilities -key voice-control -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.voiced.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.VoiceOverTouch.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.vsassetd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.scrod.plist
+fi
+
+if [[ "$Voice" == "1" ]]; then
+plutil -key capabilities -key voice-control -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.voiced.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.VoiceOverTouch.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.vsassetd.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.scrod.plist
+fi
+
+if [[ "$Passbook" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.passd.plist
+fi
+
+if [[ "$Passbook" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.passd.plist
+fi
+
+if [[ "$Overclock" == "0" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.powerd.plist
+sbalert -t "Warning" -m "You disabled overclock, if you are on iOS 6, mail app will work again"
+fi
+
+if [[ "$Overclock" == "1" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.powerd.plist
+sbalert -t "Warning" -m "You enabled overclock, if you are on iOS 6, mail app will crash."
+fi
+
+if [[ "$Vibration" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.vibrationmanagerd.plist
+fi
+
+if [[ "$Vibration" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.vibrationmanagerd.plist
+fi
+
+if [[ "$Stream" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.mediastream.mstreamd.plist
+fi
+
+if [[ "$Stream" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.mediastream.mstreamd.plist
+fi
+
+if [[ "$Midi" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.apple.midiserver-ios.plist
+fi
+
+if [[ "$Midi" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.midiserver-ios.plist
+fi
+
+if [[ "$AutoInstall" == "1" ]]; then
+launchctl load -w /System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist
+fi
+
+if [[ "$AutoInstall" == "0" ]]; then
+launchctl unload -w /System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist
+fi
+
+if [[ "$Wifi" == "1" ]]; then
+plutil -key capabilities -key wifi -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Wifi" == "0" ]]; then
+plutil -key capabilities -key wifi -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Micro" == "1" ]]; then
+plutil -key capabilities -key microphone -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Micro" == "0" ]]; then
+plutil -key capabilities -key microphone -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Battery" == "1" ]]; then
+plutil -key capabilities -key gas-gauge-battery -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Battery" == "0" ]]; then
+plutil -key capabilities -key gas-gauge-battery -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Stream" == "1" ]]; then
+plutil -key capabilities -key photo-stream -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Stream" == "0" ]]; then
+plutil -key capabilities -key photo-stream -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Fix" == "1" ]]; then
+plutil -key capabilities -key 720p -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Fix" == "0" ]]; then
+plutil -key capabilities -key 720p -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Animations" == "1" ]]; then
+plutil -key capabilities -r launch-mode /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key launch-applications-while-animating -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Animations" == "0" ]]; then
+plutil -key capabilities -key launch-mode -value pre-animate /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -r launch-applications-while-animating /System/Library/CoreServices/SpringBoard.app/$property.plist
+fi
+
+if [[ "$Bluetooth" == "1" ]]; then
+plutil -key capabilities -key bluetooth -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key Disabled -0 /System/Library/LaunchDaemons/com.apple.BTServer.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.BTServer.plist
+fi
+
+if [[ "$Bluetooth" == "0" ]]; then
+plutil -key capabilities -key bluetooth -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+plutil -key Disabled -1 /System/Library/LaunchDaemons/com.apple.BTServer.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.BTServer.plist
+fi
+
+if [[ "$Location" == "1" ]]; then
+plutil -key capabilities -key location-services -1 /System/Library/CoreServices/SpringBoard.app/$property.plist
+launchctl load -w /System/Library/LaunchDaemons/com.apple.locationd.plist
+fi
+
+if [[ "$Location" == "0" ]]; then
+plutil -key capabilities -key location-services -0 /System/Library/CoreServices/SpringBoard.app/$property.plist
+launchctl unload -w /System/Library/LaunchDaemons/com.apple.locationd.plist
+fi
+
+if [[ "$fastAppSwitcher" == "1" ]]; then
+mv "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.disabled" "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.dylib"
+mv "/Library/MobileSubstrate/DynamicLibraries/Multitasking.dylib" "/Library/MobileSubstrate/DynamicLibraries/Multitasking.disabled"
+fi
+
+if [[ "$fastAppSwitcher" == "0" ]]; then
+mv "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.dylib" "/Library/MobileSubstrate/DynamicLibraries/WDRecentApp.disabled"
+fi
+
+if [[ "$Sara" == "1" ]]; then
+mv "/Library/MobileSubstrate/DynamicLibraries/WDSara.disabled" "/Library/MobileSubstrate/DynamicLibraries/WDSara.dylib"
+fi
+
+if [[ "$Sara" == "0" ]]; then
+mv "/Library/MobileSubstrate/DynamicLibraries/WDSara.dylib" "/Library/MobileSubstrate/DynamicLibraries/WDSara.disabled"
+fi
+
+if [[ "$SharingMenu" == "1" ]]; then
+mv "/Library/MobileSubstrate/DynamicLibraries/WDiOS6Menu.disabled" "/Library/MobileSubstrate/DynamicLibraries/WDiOS6Menu.dylib"
+fi
+
+if [[ "$SharingMenu" == "0" ]]; then
+mv "/Library/MobileSubstrate/DynamicLibraries/WDiOS6Menu.dylib" "/Library/MobileSubstrate/DynamicLibraries/WDiOS6Menu.disabled"
+fi
+
+/var/mobile/Library/resurrection/bin/CacheRebuild
+
+exit 0

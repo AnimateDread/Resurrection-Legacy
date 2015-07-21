@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Tap to check for updates. You will be promoted with update info after a few seconds. Don't do anything with your device until you receive the popup.</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>ota</string>
+			<key>alignment</key>
+			<integer>1</integer>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Check For Updates</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Annihilati0n Updates</string>
+</dict>
+</plist>

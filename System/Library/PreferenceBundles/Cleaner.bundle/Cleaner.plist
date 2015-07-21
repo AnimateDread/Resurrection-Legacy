@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>clean</string>
+			<key>alignment</key>
+			<integer>1</integer>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>BUTTON</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.resurrection.cleaner</string>
+			<key>key</key>
+			<string>log</string>
+			<key>label</key>
+			<string>Logs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.resurrection.cleaner</string>
+			<key>key</key>
+			<string>cache</string>
+			<key>label</key>
+			<string>cache</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.resurrection.cleaner</string>
+			<key>key</key>
+			<string>crash</string>
+			<key>label</key>
+			<string>Crash Logs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.resurrection.cleaner</string>
+			<key>key</key>
+			<string>ad</string>
+			<key>label</key>
+			<string>Ads Caches</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.resurrection.cleaner</string>
+			<key>key</key>
+			<string>dpkg</string>
+			<key>label</key>
+			<string>Cydia DEBS Cache</string>
+		</dict>
+			<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.resurrection.cleaner</string>
+			<key>key</key>
+			<string>depends</string>
+			<key>label</key>
+			<string>Old Cydia Dependencies</string>
+		</dict>	
+	</array>
+	<key>title</key>
+	<string>TITLE</string>
+</dict>
+</plist>

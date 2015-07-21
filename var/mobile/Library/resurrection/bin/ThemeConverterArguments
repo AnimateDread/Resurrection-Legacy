@@ -1,0 +1,16 @@
+#!/bin/bash
+
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+
+base="/Library/Themes"
+
+bin="/var/mobile/Library/resurrection/bin"
+
+theme=$(plutil -key theme /var/mobile/Library/Preferences/com.resurrection.converter.plist)
+
+$bin/ThemeConverter $base/$theme 2>> /var/mobile/Library/resurrection/logs/Converter.log
+
+exit 0

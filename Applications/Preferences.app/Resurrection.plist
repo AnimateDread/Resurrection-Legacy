@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>bundle</key>
+			<string>Configurator</string>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ConfiguratorListController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>CONFIG</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>bundle</key>
+			<string>Cleaner</string>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>CleanerListController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>CLEAN</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>bundle</key>
+			<string>SoftwareUpdate</string>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>SoftwareUpdateListController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>Updates</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Resurrection Tools</string>
+</dict>
+</plist>

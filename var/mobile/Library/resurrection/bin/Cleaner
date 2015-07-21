@@ -1,0 +1,172 @@
+#!/bin/bash
+
+#the main cleaning code is from brc0703, I just added some features and broke it into parts so it could be user configurable
+
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+
+log=$(plutil -key log /var/mobile/Library/Preferences/com.resurrection.cleaner.plist)
+
+cache=$(plutil -key cache /var/mobile/Library/Preferences/com.resurrection.cleaner.plist)
+
+crash=$(plutil -key crash /var/mobile/Library/Preferences/com.resurrection.cleaner.plist)
+
+ad=$(plutil -key ad /var/mobile/Library/Preferences/com.resurrection.cleaner.plist)
+
+dpkg=$(plutil -key dpkg /var/mobile/Library/Preferences/com.resurrection.cleaner.plist)
+
+depends=$(plutil -key depends /var/mobile/Library/Preferences/com.resurrection.cleaner.plist)
+
+sbalert -t "Running" -m "Cleaning up..." -d "" &
+alert_id="$!"
+pv="/private/var"
+pvml="$pv/mobile/Library"
+pvmd="$pv/mobile/Documents"
+pvmlc="$pvml/Caches"
+dmp="/tmp/cuc.log"
+bad=".kill.list"
+ID=".ID.list"
+
+echo "Updating database.."
+updatedb
+echo -e "just another moment..\nfinding every BundeID in every Info.plist.."
+
+rm -f $ID
+
+for plist in $(locate --basename Info.plist)
+do      plutil -key CFBundleIdentifier "$plist" 2>>$dmp 1>>ID
+done
+
+launchctl list | awk '{ print $NF }' 2>>$dmp 1>>ID
+bid -a >>ID
+dpkg --get-selections | awk '{ print $NF }' >>ID
+
+sort ID | uniq >$ID && rm ID
+
+echo "searching.."
+if [[ "$log" == "1" ]]; then
+find "$pvml/Logs" -type f -name ADDataStore* 1>>$bad 2>>$dmp
+echo $pv/wireless/Library/Logs/log-bb-live-stats.txt >>$bad
+fi
+if [[ "$cache" == "1" ]]; then
+find "$pvml/Caches/com.apple.IconsCache" -type f 1>>$bad 2>>$dmp
+find "$pvml/WebKit/LocalStorage" -type f 1>>$bad 2>>$dmp
+fi
+
+if [[ "$crash" == "1" ]]; then
+find "$pv/logs/CrashReporter" -type f >>$bad
+find "$pvml/Logs/CrashReporter" -type f >>$bad
+echo $pv/log/syslog >>$bad
+fi
+
+if [[ "$ad" == "1" ]]; then
+find "$pvmlc/pagead2.googlesyndication.com" -type f >>$bad
+find "$pvmlc/admob" -type f 1>>$bad 2>>$dmp
+find "$pvmlc/googleads.g.doubleclick.net" 1>>$bad 2>>$dmp
+find "$pvmd/admob" -type f >>$bad
+find "$pvmlc/Three20" -type f >>$bad 2>>$dmp
+echo "cleaning cached ad files, snapshots..."
+find "$pv/lib/apt/lists/partial" -type f 1>>$bad 2>>$dmp
+find "$pv/tmp" -name *.tmp 1>>$bad 2>>$dmp
+find "$pv/tmp" -name *.log 1>>$bad 2>>$dmp
+find "$pv/tmp/MediaCache" -type f 1>>$bad 2>>$dmp
+fi
+
+if [[ "$depends" == "1" ]]; then
+apt-get autoremove -y
+fi
+
+if [[ "$dpkg" == "1" ]]; then
+apt-get clean
+fi
+
+
+
+find "$pvmlc" -type f -name com.apple.SpringBoard.folderSwitcherLinen* 1>>$bad 2>>$dmp
+
+for junk in $(find "$pvmlc" -mindepth 1 -maxdepth 1 -type d)
+do      BUND="$(basename "$junk" 2>>"$dmp")"
+        INSTALLED="$(grep -i "$BUND" "$ID" 2>>"$dmp")"
+        if [ "$INSTALLED" = "" ]; then
+                echo cleaning up "$BUND"
+                find "$junk" -type f >>$bad
+        fi
+done
+
+echo "cleaning cookies, local storage, tmp data"
+
+for DIRNAME in $(find /var/mobile/Applications -maxdepth 3 -type d -print | egrep -i WebKit)
+do              find "$DIRNAME"/Databases -type f 1>>$bad 2>>$dmp
+                find "$DIRNAME"/LocalStorage -type f  1>>$bad 2>>$dmp
+                find "$DIRNAME"/Cookies -type f 1>>$bad 2>>$dmp
+                app=$(echo $DIRNAME | tr '/' ' ' | awk '{ print "/"$1"/", $2"/", $3"/", $4 }' | sed 's/\s//g')
+                tar=$(basename `find $app -maxdepth 2 -type d -name *.app` | sed 's/.app//g')
+                echo "cleaning up $tar"
+done
+
+grep -v safari $bad >bad
+rm $bad
+
+while read list
+do      find "$list" -type f >>${bad}
+done < bad
+
+echo -e "cleaning up\n`cat $bad | wc -l` files for a $(du -hac `cat $bad` 2>>$dmp | tail -1)\nof crap"
+
+while read file
+do      rm -f "$file" 2>>$dmp
+done < ${bad}
+
+rm -f $bad bad $ID ID
+
+
+DEVICE=$(sysctl hw.machine)
+
+if [ "$DEVICE" = "iPhone2,1" ]; then
+updatedb && locate @2x.png | grep -i -E @2x.png$ > .deletelist_brc0703
+while read file; do rm -rf "$file"; done < .deletelist_brc0703
+num=$(cat .deletelist_brc0703 | wc -l)
+rm .deletelist_brc0703
+fi
+
+if [ "$DEVICE" = "iPhone1,1" ]; then
+updatedb && locate @2x.png | grep -i -E @2x.png$ > .deletelist_brc0703
+while read file; do rm -rf "$file"; done < .deletelist_brc0703
+num=$(cat .deletelist_brc0703 | wc -l)
+rm .deletelist_brc0703
+fi
+
+if [ "$DEVICE" = "iPhone1,2" ]; then
+updatedb && locate @2x.png | grep -i -E @2x.png$ > .deletelist_brc0703
+while read file; do rm -rf "$file"; done < .deletelist_brc0703
+num=$(cat .deletelist_brc0703 | wc -l)
+rm .deletelist_brc0703
+fi
+
+if [ "$DEVICE" = "iPod1,1" ]; then
+updatedb && locate @2x.png | grep -i -E @2x.png$ > .deletelist_brc0703
+while read file; do rm -rf "$file"; done < .deletelist_brc0703
+num=$(cat .deletelist_brc0703 | wc -l)
+rm .deletelist_brc0703
+fi
+
+if [ "$DEVICE" = "iPod2,1" ]; then
+updatedb && locate @2x.png | grep -i -E @2x.png$ > .deletelist_brc0703
+while read file; do rm -rf "$file"; done < .deletelist_brc0703
+num=$(cat .deletelist_brc0703 | wc -l)
+rm .deletelist_brc0703
+fi
+
+if [ "$DEVICE" = "iPod3,1" ]; then
+updatedb && locate @2x.png | grep -i -E @2x.png$ > .deletelist_brc0703
+while read file; do rm -rf "$file"; done < .deletelist_brc0703
+num=$(cat .deletelist_brc0703 | wc -l)
+rm .deletelist_brc0703
+fi
+
+kill $alert_id
+
+exit 0
+

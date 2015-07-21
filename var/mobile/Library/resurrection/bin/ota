@@ -1,0 +1,46 @@
+#!/bin/bash
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+#get line one by one, 1 is the number of the #line to fetch: sed '1q;d'
+#cat myFile | grep "Name: " | sed 's/Name: //
+
+curl -o /var/mobile/Library/resurrection/ota/info #server.com/info
+
+curl -o /var/mobile/Library/resurrection/ota/changelog #server.com/changelog
+
+if [[ ! -f /var/mobile/Library/resurrection/ota/info ]]; then sbalert -t "Error" -m "Could not fetch files, make sure you have internet access"
+fi
+
+db=$(cat /var/mobile/Library/resurrection/ota/database)
+info=$(cat /var/mobile/Library/resurrection/ota/info)
+changelog=$(cat /var/mobile/Library/resurrection/ota/changelog)
+
+update()
+{
+sbalert -t "$info changelog" -m "$changelog" -d Update -a Cancel
+decide=$?
+if [[ "$decide" == "0" ]]; then
+sbalert -t "Updating" -m "Fetching updates files..." -d "" &
+alert_id="$!";
+curl -o /var/mobile/Library/resurrection/ota/Resurrection.deb #server/Resurrection.deb;
+kill $alert_id;
+sbalert -t "Updating" -m "Installing update..." -d "" &
+alert_id="$!";
+dpkg -i /var/mobile/Library/resurrection/ota/Resurrection.deb;
+kill $alert_id;
+killall SpringBoard
+else exit 0
+fi
+}
+
+
+if [[ "$info" > "$db" ]];
+then update;
+else sbalert -t "Information" -m "No updates found for Resurrection";
+rm /var/mobile/Library/resurrection/ota/changelog;
+rm /var/mobile/Library/resurrection/ota/info;
+fi
+
+exit 0

@@ -1,0 +1,8 @@
+package: com.revivaldev.resurrection
+name: Resurrection
+author: RevivalDev
+maintainer: RevivalDev
+version: 0.9
+architecture: iphoneos-arm
+pre-depends: mobilesubstrate, adv-cmds, bash, basic-cmds, coreutils, coreutils-bin, diffutils, file-cmds, findutils, lzma, ncurses, grep, readline, sed, system-cmds, com.innoying.sbutils, com.ericasadun.utilities, curl, apt7, gawk, openssl
+description: Resurrection is a project built from scratch and actively being worked on to patch bugs and add new features, for armv6/armv7 iOS devices, wich aim to bring some unique features and easy customization for your device. It will install on any devices with armv6/armv7 CPU (any devices BEFORE iPhone 5, iPod touch 5, iPad 3). It also works with any iOS versions below iOS 7. At first boot you won't notice any differences, but if you open the settings app, you will see a new tab called Resurrection, and from there, you can: Use a automated and configurable device cleaner, to free up space and clear junk. Check for updates, you don't need cydia to update resurrection. Use the simple, GUI configurator, wich allow you to select desired iOS/Resurrection features with switches and the tap of a button. If someday you decide to remove Resurrection, you do not need to restore, just go to cydia and uninstall it, it will put your device back to default state.

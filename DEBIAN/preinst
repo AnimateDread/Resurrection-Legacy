@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "preinst script"
+touch "/var/mobile/lock"
+exit 0

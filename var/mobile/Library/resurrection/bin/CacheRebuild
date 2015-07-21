@@ -1,0 +1,14 @@
+#!/bin/bash
+
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+
+rm -rf /var/mobile/Library/Caches/*
+
+su -c uicache mobile
+
+killall SpringBoard
+
+exit 0

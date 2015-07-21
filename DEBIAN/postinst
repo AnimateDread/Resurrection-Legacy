@@ -1,0 +1,359 @@
+#!/bin/bash
+echo "postinst script"
+rm /var/mobile/lock
+
+echo "setting variables"
+
+base="/var/mobile/Library/backup"
+app="/Applications"
+version=$(plutil -key ProductVersion /System/Library/CoreServices/SystemVersion.plist)
+device=$(sysctl hw.machine)
+property=$(uname -i)
+
+echo "creating license"
+
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+touch /var/mobile/Library/resurrection/$crypt
+
+echo "adding new version to OTA system"
+
+echo "0.9" > /var/mobile/Library/resurrection/ota/database
+
+if [[ ! -f /var/mobile/Library/backup/com.apple.SystemPowerProfileDefaults.plist ]];
+
+then
+
+echo "no backups found, backing up, in case you need to uninstall Resurrection"
+
+mkdir /var/mobile/Library/backup
+
+mkdir /var/mobile/Library/backup/Preferences
+
+#Backing up system files 
+
+echo "backing up settings.plist"
+
+cp -r $app/Preferences.app/Settings.plist $base/Preferences/Settings.plist
+
+echo "backing up powermanagement files"
+
+cp /System/Library/SystemConfiguration/PowerManagement.bundle/com.apple.SystemPowerProfileDefaults.plist $base/com.apple.SystemPowerProfileDefaults.plist
+
+cp /System/Library/CoreServices/powerd.bundle/com.apple.SystemPowerProfileDefaults.plist $base/com.apple.SystemPowerProfileDefaults.plist
+
+cp /System/Library/Frameworks/CoreGraphics.framework/Resources/Configuration.plist /$base/Configuration.plist
+
+
+if [ "$version" = "3.1.3" ]; then
+cp /System/Library/CoreServices/SpringBoard.app/SBDockBG.png $base/SBDockBG.png
+cp $app/Preferences.app/Settings-iPhone.plist $base/Preferences/Settings-iPhone.plist
+cp $app/Preferences.app/Settings-iPod.plist $base/Preferences/Settings-iPod.plist
+cp $app/Preferences.app/wallpaperblock.png $base/Preferences/wallpaperblock.png
+fi
+
+echo "done backing up"
+
+else echo "Backup files already exists, skipping..."
+
+fi
+
+if [ "$version" = "3.1.3" ]; then
+rm -rf /Applications/Vídeo.app
+license=$(echo "`sbdevice -u`-EpicTechnology" | openssl dgst -sha1 -hmac "AppleJuice")
+if [[ -f /var/mobile/$license ]]; then
+echo "starting installation for $device on Whited00r 6..."
+base3="/var/mobile/Library/resurrection/installation/ios3"
+sl="/System/Library"
+echo "Moving files..."
+cp /var/mobile/Library/resurrection/installation/powermanagement/com.apple.* $sl/SystemConfiguration/PowerManagement.bundle/
+cp /var/mobile/Library/resurrection/installation/powermanagement/Configuration.plist $sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist
+cp -r $base3/settings/* $app/Preferences.app/
+cp -r $base3/springboard/AppSwitcher $sl/CoreServices/SpringBoard.app/AppSwitcher
+cp $base3/substrate/Multitasking.dylib /Library/MobileSubstrate/DynamicLibraries/Multitasking.disabled
+cp $base3/substrate/Multitasking.plist /Library/MobileSubstrate/DynamicLibraries/Multitasking.plist
+cp $base3/substrate/Backgrounder.dylib /Library/MobileSubstrate/DynamicLibraries/Backgrounder.disabled
+cp $base3/substrate/Backgrounder.plist /Library/MobileSubstrate/DynamicLibraries/Backgrounder.plist
+echo "Done."
+echo "Adding some keys to $property.plist..."
+plutil -key capabilities -key auto-focus-camera -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key wd6 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key ios3 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+echo "Done."
+echo "Cleaning up..."
+else
+echo "starting installation for $device on iOS $version..."
+base3="/var/mobile/Library/resurrection/installation/ios3"
+sl="/System/Library"
+echo "Moving files..."
+cp /var/mobile/Library/resurrection/installation/powermanagement/com.apple.* $sl/SystemConfiguration/PowerManagement.bundle/
+cp /var/mobile/Library/resurrection/installation/powermanagement/Configuration.plist $sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist
+cp -r $base3/settings/* $app/Preferences.app/
+cp -r $base3/springboard/* $sl/CoreServices/SpringBoard.app/
+cp -r $base3/substrate/iOS3Wallpaper /Library/MobileSubstrate/iOS3Wallpaper
+cp -r $base3/substrate/* /Library/MobileSubstrate/DynamicLibraries/
+cp -r $base3/com.darlo* /var/mobile/Library/Preferences/
+mv "$base3/Terminal.app" "/Applications/Terminal.app"
+echo "Done."
+echo "Adding some keys to $property.plist..."
+plutil -key capabilities -key auto-focus-camera -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key ios3 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+echo "Done."
+if [[ ! -f /var/mobile/Library/folderset ]];
+then
+echo "Configuring folders"
+if [ -a "/private/var/mobile/Library/Preferences/springboardFolderStash" ]; then
+rm -f -r "/private/var/mobile/Library/Preferences/springboardFolderStash"
+fi
+rm -r -f /Applications/com.springboard.folder*
+mkdir /private/var/mobile/Library/Preferences/springboardFolderStash
+for i in {1..50}
+do
+mkdir /private/var/mobile/Library/Preferences/springboardFolderStash/com.springboard.folder$i.app
+ln -s /private/var/mobile/Library/Preferences/springboardFolderStash/com.springboard.folder$i.app /Applications/com.springboard.folder$i.app
+done
+chmod -R 777 /private/var/mobile/Library/Preferences/springboardFolderStash
+touch "/var/mobile/Library/folderset"
+else echo "Skipping folders setup..."
+fi
+if [ "$device" = "iphone1,1" ]; then
+if [[ ! -f /var/mobile/$license ]]; then
+cp -r /var/mobile/Library/resurrection/installation/videoswitch* /Library/MobileSubstrate/DynamicLibraries/
+fi
+fi
+if [ "$device" = "iphone1,2" ]; then
+if [[ ! -f /var/mobile/$license ]]; then
+cp -r /var/mobile/Library/resurrection/installation/videoswitch* /Library/MobileSubstrate/DynamicLibraries/
+fi
+fi
+echo "Cleaning up..."
+rm -rf "/var/mobile/Library/resurrection/installation"
+echo "Ready to go!"
+fi
+fi
+
+ios4()
+{
+echo "starting installation for $device on iOS $version..."
+base4="/var/mobile/Library/resurrection/installation/ios4"
+sl="/System/Library"
+echo "Moving files..."
+cp /var/mobile/Library/resurrection/installation/powermanagement/com.apple* $sl/SystemConfiguration/PowerManagement.bundle/
+cp /var/mobile/Library/resurrection/installation/powermanagement/Configuration.plist $sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist
+cp -r $base4/settings/* $app/Preferences.app/
+cp -r $base4/substrate/* /Library/MobileSubstrate/DynamicLibraries/
+mv "$base4/Terminal.app" "/Applications/Terminal.app"
+echo "Done."
+echo "Adding some keys to $property.plist..."
+plutil -key capabilities -key ios4 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key ios3to4 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key opengles-2 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key auto-focus-camera -1 $sl/CoreServices/SpringBoard.app/$property.plist
+echo "Done."
+echo "Cleaning up..."
+if [ "$device" = "iphone1,2" ]; then
+cp -r /var/mobile/Library/resurrection/installation/videoswitch* /Library/MobileSubstrate/DynamicLibraries/
+fi
+rm -rf "/var/mobile/Library/resurrection/installation"
+echo "Ready to go!"
+}
+
+ios5()
+{
+echo "starting installation for $device on iOS $version..."
+base5="/var/mobile/Library/resurrection/installation/ios5"
+sl="/System/Library"
+echo "Moving files..."
+cp /var/mobile/Library/resurrection/installation/powermanagement/com.apple* $sl/CoreServices/powerd.bundle/
+cp /var/mobile/Library/resurrection/installation/powermanagement/Configuration.plist $sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist
+cp -r $base5/settings/* $app/Preferences.app/
+cp -r $base5/substrate/* /Library/MobileSubstrate/DynamicLibraries/
+mv "$base5/Terminal.app" "/Applications/Terminal.app"
+echo "Done."
+echo "Adding some keys to $property.plist..."
+plutil -key capabilities -key ios4to5 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key ios3to5 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key ios5 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+echo "Done."
+echo "Cleaning up..."
+rm -rf "/var/mobile/Library/resurrection/installation"
+echo "Ready to go!"
+}
+
+ios6()
+{
+echo "starting installation for $device on iOS $version..."
+base6="/var/mobile/Library/resurrection/installation/ios6"
+sl="/System/Library"
+echo "Moving files..."
+cp /var/mobile/Library/resurrection/installation/powermanagement/com.apple* $sl/CoreServices/powerd.bundle/com.apple
+cp /var/mobile/Library/resurrection/installation/powermanagement/Configuration.plist $sl/Frameworks/CoreGraphics.framework/Resources/Configuration.plist
+cp -r $base6/settings/* $app/Preferences.app/
+cp -r $base6/substrate/* /Library/MobileSubstrate/DynamicLibraries/
+cp $base6/Info.plist /$app/Maps.app/Info.plist
+mv "$base6/Terminal.app" "/Applications/Terminal.app"
+echo "Done."
+echo "Adding some keys to $property.plist..."
+plutil -key capabilities -key ios3to6 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key ios4to6 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key ios5to6 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+plutil -key capabilities -key ios6 -1 $sl/CoreServices/SpringBoard.app/$property.plist
+echo "Done."
+echo "Cleaning up..."
+rm -rf "/var/mobile/Library/resurrection/installation"
+echo "Ready to go!"
+}
+
+if [ "$version" = "4.0" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.0.1" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.0.2" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.1" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.2.1" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.3" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.3.1" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.3.2" ]; then
+ios4;
+fi
+
+if [ "$version" = "4.3.3" ]; then
+ios4;
+fi
+
+if [ "$version" = "5.0" ]; then
+ios5;
+fi
+
+if [ "$version" = "5.0.1" ]; then
+ios5;
+fi
+
+if [ "$version" = "5.1" ]; then
+ios5;
+fi
+
+if [ "$version" = "5.1.1" ]; then
+ios5;
+fi
+
+if [ "$version" = "6.0" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.0.1" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1.1" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1.2" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1.3" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1.5" ]; then
+ios6;
+fi
+
+if [ "$version" = "6.1.6" ]; then
+ios6;
+fi
+
+echo "Setting permissions..."
+chown -R root:wheel /System/Library/PreferenceBundles/Cleaner.bundle
+chown -R root:wheel /System/Library/PreferenceBundles/Configurator.bundle
+chown -R root:wheel /System/Library/PreferenceBundles/iCloud.bundle
+chown -R root:wheel /System/Library/PreferenceBundles/SoftwareUpdate.bundle
+chown -R root:wheel /System/Library/PreferenceBundles/Themer.bundle
+chown -R root:wheel /var/mobile/Library/resurrection/bin
+
+chmod -R 4755 /System/Library/PreferenceBundles/Cleaner.bundle
+chmod -R 4755 /System/Library/PreferenceBundles/Configurator.bundle
+chmod -R 4755 /System/Library/PreferenceBundles/iCloud.bundle
+chmod -R 4755 /System/Library/PreferenceBundles/SoftwareUpdate.bundle
+chmod -R 4755 /System/Library/PreferenceBundles/Themer.bundle
+chmod -R 4755 /var/mobile/Library/resurrection/bin
+echo "Done."
+
+echo "disabling some unuseful background services"
+d="/System/Library/LaunchDaemons"
+mv "$d/com.apple.appsupport.cplogd.plist" "$d/com.apple.appsupport.cplogd.bak"
+
+mv "$d/com.apple.apsd.tcpdump.en0.plist" "$d/com.apple.apsd.tcpdump.en0.bak"
+
+mv "$d/com.apple.tcpdump.pdp_ip0.plist" "$d/com.apple.tcpdump.pdp_ip0.plist"
+
+mv "$d/com.apple.aslmanager.plist" "$d/com.apple.aslmanager.bak"
+
+mv "$d/com.apple.certui.relay.plist" "$d/com.apple.certui.relay.bak"
+
+mv "$d/com.apple.coresymbolicationd.plist" "$d/com.apple.coresymbolicationd.bak"
+
+mv "$d/com.apple.crash_mover.plist" "$d/com.apple.crash_mover.bak"
+
+mv "$d/com.apple.DumpPanic.plist" "$d/com.apple.DumpPanic.bak"
+
+mv "$d/com.apple.fsvented.plist" "$d/com.apple.fsvented.bak"
+
+mv "$d/com.apple.marcoagent.plist" "$d/com.apple.marcoagent.bak"
+
+mv "$d/com.apple.mobile.softwareupdated.plist" "$d/com.apple.mobile.softwareupdated.bak"
+
+mv "$d/com.apple.OTACrashCopier.plist" "$d/com.apple.OTACrashCopier.bak"
+
+mv "$d/com.apple.OTATaskingAgent.plist" "$d/com.apple.OTATaskingAgent.bak"
+
+mv "$d/com.apple.powerlog.plist" "$d/com.apple.powerlog.bak"
+
+mv "$d/com.apple.sharktrace.plist" "$d/com.apple.sharktrace.bak"
+
+mv "$d/com.apple.softwareupdateservicesd.plist" "$d/com.apple.softwareupdateservicesd.bak"
+
+mv "$d/com.apple.syslog.plist" "$d/com.apple.syslog.bak"
+
+mv "$d/com.apple.AdminLite.plist" "$d/com.apple.AdminLite.bak"
+
+mv "$d/com.apple.awdd.plist" "$d/com.apple.awdd.bak"
+
+mv "$d/com.apple.mobile.profile_janitor.plist" "$d/com.apple.mobile.profile_janitor.bak"
+
+mv "$d/com.apple.mobile.obliteration.plist" "$d/com.apple.mobile.obliteration.bak"
+
+echo "done"
+
+declare -a cydia
+cydia=($CYDIA)
+ 
+if [[ ${CYDIA+@} ]]; then
+    eval "echo 'finish:respring' >&${cydia[0]}"
+fi
+
+exit 0

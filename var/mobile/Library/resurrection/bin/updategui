@@ -1,0 +1,158 @@
+#!/bin/bash
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+
+sbalert -t "Running" -m "Refreshing Themer GUI..." -d "" &
+alert_id="$!"
+
+ThemeList(){
+
+plistgen=$(cat /var/mobile/Library/resurrection/bin/PlistGen.plist)
+base="/var/mobile/Library/resurrection/themes"
+
+mkdir /System/Library/PreferenceBundles/Themer.bundle/temp
+
+echo "$plistgen" > /System/Library/PreferenceBundles/Themer.bundle/temp/Themer.plist
+
+echo "<dict>
+      <key>action</key>
+      <string>apply</string>
+      <key>alignment</key>
+      <integer>1</integer>
+      <key>cell</key>
+      <string>PSButtonCell</string>
+      <key>label</key>
+      <string>APPLY</string>
+    </dict>	
+    <dict>
+      <key>cell</key>
+      <string>PSGroupCell</string>
+    </dict>
+    <dict>
+      <key>cell</key>
+      <string>PSGroupCell</string>
+    </dict>" >> /System/Library/PreferenceBundles/Themer.bundle/temp/Themer.plist
+
+ls "$base" | sort | while read theme; do
+echo "<dict>    
+      <key>cell</key>
+      <string>PSSegmentCell</string>
+      <key>defaults</key>
+      <string>com.resurrection.themer</string>
+      <key>key</key>
+      <string>theme</string>
+      <key>label</key>
+      <string>$theme</string>
+      <key>validTitles</key>
+      <array>
+        <string>$theme</string>
+      </array>
+      <key>validValues</key>
+      <array>
+        <string>$theme</string>
+      </array>
+    </dict>
+    <dict>
+      <key>cell</key>
+      <string>PSGroupCell</string>
+    </dict>
+	    <dict>
+      <key>cell</key>
+      <string>PSGroupCell</string>
+    </dict>
+	<dict>
+				<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>optionsListController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>Options</string>
+		</dict>" >> /System/Library/PreferenceBundles/Themer.bundle/temp/Themer.plist
+echo " " >> /System/Library/PreferenceBundles/Themer.bundle/temp/Themer.plist
+done
+echo "</array>
+  <key>title</key>
+  <string>Themer</string>
+  </dict>
+</plist>" >> /System/Library/PreferenceBundles/Themer.bundle/temp/Themer.plist
+
+mv "/System/Library/PreferenceBundles/Themer.bundle/temp/Themer.plist" "/System/Library/PreferenceBundles/Themer.bundle/Themer.plist" 
+
+rm -rf /System/Library/PreferenceBundles/Themer.bundle/temp
+
+}
+
+ThemeConverterList(){
+plistgen=$(cat /var/mobile/Library/resurrection/bin/PlistGen.plist)
+base="/Library/Themes"
+
+mkdir /System/Library/PreferenceBundles/Themer.bundle/temp
+
+echo "$plistgen" > /System/Library/PreferenceBundles/Themer.bundle/temp/Converter.plist
+
+echo "<dict>
+      <key>action</key>
+      <string>convert</string>
+      <key>alignment</key>
+      <integer>1</integer>
+      <key>cell</key>
+      <string>PSButtonCell</string>
+      <key>label</key>
+      <string>CONVERT</string>
+    </dict>	
+    <dict>
+      <key>cell</key>
+      <string>PSGroupCell</string>
+    </dict>
+    <dict>
+      <key>cell</key>
+      <string>PSGroupCell</string>
+    </dict>" >> /System/Library/PreferenceBundles/Themer.bundle/temp/Converter.plist
+
+ls "$base" | sort | while read theme; do
+echo "<dict>    
+      <key>cell</key>
+      <string>PSSegmentCell</string>
+      <key>defaults</key>
+      <string>com.resurrection.converter</string>
+      <key>key</key>
+      <string>theme</string>
+      <key>label</key>
+      <string>$theme</string>
+      <key>validTitles</key>
+      <array>
+        <string>$theme</string>
+      </array>
+      <key>validValues</key>
+      <array>
+        <string>$theme</string>
+      </array>
+    </dict>
+    <dict>
+      <key>cell</key>
+      <string>PSGroupCell</string>
+    </dict>" >> /System/Library/PreferenceBundles/Themer.bundle/temp/Converter.plist
+echo " " >> /System/Library/PreferenceBundles/Themer.bundle/temp/Converter.plist
+done
+echo "</array>
+  <key>title</key>
+  <string>Converter</string>
+  </dict>
+</plist>" >> /System/Library/PreferenceBundles/Themer.bundle/temp/Converter.plist
+
+mv "/System/Library/PreferenceBundles/Themer.bundle/temp/Converter.plist" "/System/Library/PreferenceBundles/Themer.bundle/Converter.plist" 
+
+rm -rf /System/Library/PreferenceBundles/Themer.bundle/temp
+
+}
+
+ThemeList;
+ThemeConverterList;
+
+kill $alert_id
+
+exit 0

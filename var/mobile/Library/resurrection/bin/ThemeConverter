@@ -1,0 +1,51 @@
+#!/bin/bash
+
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+
+#| while read file; do
+
+theme="$1"
+
+base="/Library/Themes"
+
+home="/var/mobile/Library/resurrection/themes"
+
+name=$(plutil -key theme /var/mobile/Library/Preferences/com.resurrection.converter.plist)
+
+sbalert -t "Running" -m "Converting $name..." -d "" &
+alert_id="$!"
+
+find "$theme"
+
+cp $theme $home
+
+mkdir $home/$name/Applications
+
+mkdir $home/$name/System
+
+mkdir $home/$name/System/Library
+
+mkdir $home/$name/System/Library/CoreServices
+
+while true; do
+
+mv "$home/$name/Bundles/*" "$home/$name" & mv "$home/$name/Folders/*" "$home/$name"
+
+mv "$home/$name/*.app" "$home/$name/Applications/"
+
+mv "$home/$name/com.apple.springboard" "$home/$name/System/Library/CoreServices/SpringBoard.app"
+
+mv "$home/$name/com.apple.AppStore" "$home/$name/Applications/AppStore.app"
+
+
+done
+
+
+rm -rf $home/$name/Folders & rm -rf $home/$name/Bundles;
+
+rm /var/mobile/Library/Preferences/com.resurrection.converter.plist
+
+$theme

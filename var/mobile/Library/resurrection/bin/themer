@@ -1,0 +1,48 @@
+#!/bin/bash
+crypt=$(echo "'sbdevice -u'-WhTivjjhhgghYgjiUYfRvH" | openssl dgst -sha512 -hmac "OpBtCJhcghTFcjjhvVFvcDGHU")
+if [[ ! -f /var/mobile/Library/resurrection/$crypt ]]; then echo "This only works in Resurrection";
+exit 0
+fi
+command="$1"
+ 
+theme="$2"
+
+name=$(plutil -key theme /var/mobile/Library/Preferences/com.resurrection.themer.plist)
+ 
+apply(){
+sbalert -t "Running" -m "Applying $name theme..." -d "" &
+alert_id="$!"
+find "$theme" | sed "s,$theme,," | sed 's/.png$//' | while read file; do
+if [[ -f "$theme/$file.png" ]];
+then if [[ -f "$file.png" ]];
+then if [[ ! -f "$file.bk" ]];
+then mv "$file.png" "$file.bk";
+fi
+cp "$theme/$file.png" "$file.png";
+fi
+fi
+done
+kill $alert_id
+sbalert -t "Success" -m "Now rebuilding cache..." -d "" &
+alert_id="$!"
+/var/mobile/Library/resurrection/bin/CacheRebuild
+kill $alert_id
+}
+ 
+uninstall(){
+sbalert -t "Running" -m "Reverting to default from $name theme..." -d "" &
+alert_id="$!"
+find "$theme" | sed "s,$theme,," | sed 's/.png$//' | while read file; do
+if [[ -f "$file.bk" ]];
+then mv "$file.bk" "$file.png"
+fi
+done
+kill $alert_id
+sbalert -t "Success" -m "Now rebuilding cache..." -d "" &
+alert_id="$!"
+rm /var/mobile/Library/Preferences/com.resurrection.themer.plist
+/var/mobile/Library/resurrection/bin/CacheRebuild
+kill $alert_id
+}
+
+$command $theme

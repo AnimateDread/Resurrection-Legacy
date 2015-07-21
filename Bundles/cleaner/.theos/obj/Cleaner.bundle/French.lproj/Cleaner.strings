@@ -1,0 +1,3 @@
+"BUTTON" = "Appliquer les modifications";
+"LABEL" = "Cette options nettoira les fichiers temporaires, les cookies, les caches d'applications, etc.";
+"TITLE" = "Nettoyeur";
